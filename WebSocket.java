@@ -1,3 +1,7 @@
+import json.Currencies;
+import json.JSonContract;
+import json.JSonQuote;
+import json.Type;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import java.net.URI;
@@ -9,75 +13,72 @@ import java.util.Date;
 
 
 public class WebSocket {
-    private String price;
 
-    public String getPrice() {
-        return price;
-    }
+
+    private String date;
+
+    private String touch;
+
+    private String notouch;
 
     public String getDate() {
         return date;
     }
+    public String getTouch() {
+        return touch;
+    }
+        public String getNotouch() {
+        return notouch;
+    }
 
-    private String date;
+
     public WebSocket() throws Exception{
         // open websocket
         final WebsocketClientEndpoint clientEndPoint = new WebsocketClientEndpoint(new URI("wss://ws.binaryws.com/websockets/v3?app_id=1089"));
         // send message to websocket
-
-
+        //формирование предварительного json запроса
+JSonQuote jSonQuote=new JSonQuote(Currencies.EURUSD);
         //Запрос котировки
-        clientEndPoint.sendMessage("{\n" +
-                "  \"ticks_history\": \"frxEURUSD\",\n" +
-                "  \"end\": \"latest\",\n" +
-                "  \"count\": 1\n" +
-                "}");
+        clientEndPoint.sendMessage(jSonQuote.getQuote());
         Thread.sleep(1000);
-        String a=clientEndPoint.getMessage();
-      //  System.out.println(a);
-        JSONObject jsonObject =(JSONObject) new JSONParser().parse(a);
-        JSONObject json1=(JSONObject)jsonObject.get("history");
-        String value=json1.get("prices").toString().substring(2, 9);
-     //   System.out.println(value);
-        String bar50=String.valueOf(Float.parseFloat(value)+(float) 0.00500);
-      //  System.out.println(bar50);
 
+            //расчет барьера
+        String barrier=jSonQuote.bar_cal(clientEndPoint.getMessage());
 
-        // Запрос контракта
-        clientEndPoint.sendMessage("{\n" +
-                "  \"proposal\": 1,\n" +
-                "  \"amount\": \"100\",\n" +
-                "  \"basis\": \"payout\",\n" +
-                "  \"contract_type\": \"NOTOUCH\",\n" +
-                "  \"currency\": \"USD\",\n" +
-                "  \"duration\": \"1\",\n" +
-                "  \"duration_unit\": \"d\",\n" +
-                "  \"barrier\": "+bar50+",\n"+
-                "  \"symbol\": \"frxEURUSD\"\n" +
-                "}");
+        //формирование контрактного запроса
+        JSonContract jSonContract=new JSonContract(barrier, Currencies.EURUSD, Type.ONETOUCH);
+        //запрос контракта
+        clientEndPoint.sendMessage(jSonContract.getContract());
 
         // wait 1 seconds for messages from websocket
         Thread.sleep(1000);
-        String s=clientEndPoint.getMessage();
 
-        JSONObject obj =(JSONObject) new JSONParser().parse(s);
-        JSONObject json=(JSONObject)obj.get("proposal");
-      //  System.out.println(obj);
+//обработка json под расчет цены и даты
+jSonContract.contract_cal(clientEndPoint.getMessage());
 
-        this.price=json.get("ask_price").toString();
+//Получение даты
+        this.date=jSonContract.getDate();
 
-    //    System.out.println(price);
+        //Получение цены
+        this.touch=jSonContract.getPrice();
 
-        //Запрос даты
-        this.date=(new Date(Long.parseLong(json.get("spot_time").toString())*1000)).toString();
 
+//дублируем противоположный контракт
+        //формирование контрактного запроса
+        JSonContract jSonContract1=new JSonContract(barrier, Currencies.EURUSD, Type.NOTOUCH);
+        //запрос контракта
+        clientEndPoint.sendMessage(jSonContract1.getContract());
+
+        // wait 1 seconds for messages from websocket
+        Thread.sleep(1000);
+
+//обработка json под расчет цены и даты
+        jSonContract1.contract_cal(clientEndPoint.getMessage());
+
+       this.notouch=jSonContract1.getPrice();
+
+        //закрытие сокета
         clientEndPoint.userSession.close();
-
-     // System.out.println(date);
-
-
-
-        //   Thread.sleep(30000);
-    }
+        }
 
 }

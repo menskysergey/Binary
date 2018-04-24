@@ -16,7 +16,7 @@ public class Solution {
         // группой задания и классом выполняемого задания
         JobDetailImpl jobDetail = new JobDetailImpl("Binary", BinaryJob.class);
         // Запускаем CronTrigger с его именем и именем группы
-        CronTriggerImpl cronTrigger = new CronTriggerImpl("d", "q","0 0 3-21 * * ?");
+        CronTriggerImpl cronTrigger = new CronTriggerImpl("d", "q","1/15 * * * * ?");
 
         // Планируем задание с помощью JobDetail и Trigger
         scheduler.scheduleJob(jobDetail, cronTrigger);

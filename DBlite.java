@@ -22,7 +22,7 @@ if (conn!=null){
         PreparedStatement stmt = conn.prepareStatement(sql);
 
         stmt.setString(1, webSocket.getDate());
-        stmt.setString(2, webSocket.getPrice());
+   //     stmt.setString(2, webSocket.getPrice());
 
 // Выполнение запроса
         stmt.executeUpdate();

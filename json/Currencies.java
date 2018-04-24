@@ -1,6 +1,6 @@
 package json;
 
-enum Currencies{
+public enum Currencies{
     EURUSD("frxEURUSD"), GBPUSD("frxGBPUSD"), AUDUSD("frxAUDUSD"), EURAUD("frxEURAUD"), EURCAD("frxEURCAD"), EURCHF("frxEURCHF"),
     EURGBP("frxEURGBP"), EURJPY("frxEURJPY"), GBPAUD("frxGBPAUD"), GBPJPY("frxGBPJPY");
     private String symbol;
