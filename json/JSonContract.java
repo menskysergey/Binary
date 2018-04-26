@@ -55,6 +55,7 @@ public class JSonContract {
     public void contract_cal(String websock_mes) throws Exception{
                JSONObject obj =(JSONObject) new JSONParser().parse(websock_mes);
                JSONObject json=(JSONObject)obj.get("proposal");
+               Thread.sleep(500);
                this.price=json.get("ask_price").toString();
                this.date=(new Date(Long.parseLong(json.get("spot_time").toString())*1000)).toString();
            }
