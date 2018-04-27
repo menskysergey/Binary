@@ -4,7 +4,10 @@ import json.JSonQuote;
 import json.Type;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -34,15 +37,30 @@ private CurWriter eurgbp;
         return eurusd;
     }
 
-    public WebSocket() throws Exception{
+    public WebSocket() throws IOException, URISyntaxException{
         // open websocket
         final WebsocketClientEndpoint clientEndPoint = new WebsocketClientEndpoint(new URI("wss://ws.binaryws.com/websockets/v3?app_id=1089"));
 
         //получение данных по валюте
-        this.eurusd=new CurWriter(clientEndPoint, Currencies.EURUSD);
-        this.gbpusd=new CurWriter(clientEndPoint, Currencies.GBPUSD);
-        this.audusd=new CurWriter(clientEndPoint, Currencies.AUDUSD);
-        this.eurgbp=new CurWriter(clientEndPoint, Currencies.EURGBP);
+       try {
+           this.eurusd=new CurWriter(clientEndPoint, Currencies.EURUSD);
+       }catch (Exception e){
+           System.out.println("EURUSD не пошел");
+       }
+       try {
+           this.gbpusd=new CurWriter(clientEndPoint, Currencies.GBPUSD);
+       }catch (Exception e){
+           System.out.println("GBPUSD не пошел");}
+        try {
+            this.audusd=new CurWriter(clientEndPoint, Currencies.AUDUSD);
+        }catch (Exception e){
+            System.out.println("AUDUSD не пошел");
+        }
+        try {
+            this.eurgbp=new CurWriter(clientEndPoint, Currencies.EURGBP);
+        }catch (Exception e){
+            System.out.println("EURGBP не пошел");
+        }
         //закрытие сокета
         clientEndPoint.userSession.close();
       }

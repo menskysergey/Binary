@@ -2,6 +2,7 @@ package json;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JSonQuote {
 private Currencies currencies;
@@ -23,7 +24,7 @@ private String quote;
         return quote;
     }
 // расчет барьера
-    public String bar_cal(String websock_mes) throws Exception{JSONObject jsonObject =(JSONObject) new JSONParser().parse(websock_mes);
+    public String bar_cal(String websock_mes) throws ParseException{JSONObject jsonObject =(JSONObject) new JSONParser().parse(websock_mes);
         JSONObject json1=(JSONObject)jsonObject.get("history");
         String value=json1.get("prices").toString().substring(2, json1.get("prices").toString().length()-2);
         return String.valueOf(Float.parseFloat(value)+(float) 0.00500);}

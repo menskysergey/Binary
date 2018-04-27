@@ -3,6 +3,7 @@ package json;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class JSonContract {
@@ -11,6 +12,8 @@ public class JSonContract {
    private Type type;
    private String date;
    private String price;
+   private int days;
+   private boolean isFriday=(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)==6);
 
     public String getBarrier() {
         return barrier;
@@ -28,6 +31,7 @@ public class JSonContract {
     private String contract;
 
     public JSonContract(String barrier, Currencies currencies, Type type) {
+        this.days=isFriday?3:1;
         this.barrier = barrier;
         this.currencies = currencies;
         this.type=type;
@@ -37,12 +41,12 @@ public class JSonContract {
                 "  \"basis\": \"payout\",\n" +
                 "  \"contract_type\": \""+type+"\",\n" +
                 "  \"currency\": \"USD\",\n" +
-                "  \"duration\": \"1\",\n" +
+                "  \"duration\": \""+days+"\",\n" +
                 "  \"duration_unit\": \"d\",\n" +
                 "  \"barrier\": "+barrier+",\n"+
                 "  \"symbol\": \""+currencies.getSymbol()+"\"\n" +
                 "}";
-           }
+                  }
 
     public String getDate() {
         return date;
