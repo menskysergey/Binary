@@ -1,3 +1,5 @@
+package websocket;
+
 import org.json.simple.JSONObject;
 
 import java.net.URI;
@@ -18,7 +20,7 @@ import javax.websocket.WebSocketContainer;
 @ClientEndpoint
 public class WebsocketClientEndpoint {
 
-    Session userSession = null;
+    public Session userSession = null;
     private String message;
 
     public WebsocketClientEndpoint(URI endpointURI) {

@@ -8,7 +8,6 @@ import java.util.Calendar;
 
 public class Solution {
     public static void main(String []args) throws Exception, SchedulerException {
-        boolean isFriday=(java.util.Calendar.getInstance().get(Calendar.DAY_OF_WEEK)==6);
 
 
         SchedulerFactory schedulerFactory = new StdSchedulerFactory();
@@ -19,7 +18,7 @@ public class Solution {
         // группой задания и классом выполняемого задания
         JobDetailImpl jobDetail = new JobDetailImpl("Binary", BinaryJob.class);
         // Запускаем CronTrigger с его именем и именем группы
-              CronTriggerImpl cronTrigger = new CronTriggerImpl("d", "q", "0 0 0-23 ? * 2-6");
+              CronTriggerImpl cronTrigger = new CronTriggerImpl("d", "q", "0 0 0 ? * 3-7");
             //  cronTrigger.setCronExpression("0 0 0-23 ? * 2-6");
 
         // Планируем задание с помощью JobDetail и Trigger
